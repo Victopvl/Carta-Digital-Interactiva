@@ -6,7 +6,13 @@
   <title>Carta Digital Interactiva</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="css/styles.css">
 </head>
+
+<script src="js/config.js"></script>
+<script src="js/supabase.js"></script>
+<script src="js/public/menu.js"></script>
+
 <body class="bg-gray-50 text-gray-800 font-sans p-4 max-w-md mx-auto">
   <header class="text-center mb-6 mt-4">
     <h1 class="text-3xl font-bold text-gray-900">Menú del Día</h1>
@@ -17,34 +23,5 @@
     <p class="text-center text-sm text-gray-500 animate-pulse">Cargando carta...</p>
   </main>
 
-  <script>
-    // INSERTA TUS CREENCIALES AQUÍ
-    const supabase = supabase.createClient('TU_URL', 'TU_ANON_KEY');
-
-    async function loadMenu() {
-      const { data, error } = await supabase.from('products').select('*').order('category');
-      if (error) return console.error(error);
-
-      document.getElementById('menu-container').innerHTML = data.map(p => `
-        <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex justify-between items-center transition-opacity ${!p.is_available ? 'opacity-40 grayscale' : ''}">
-          <div class="flex-1 pr-4">
-            <h3 class="font-bold text-lg text-gray-800 flex items-center gap-2">
-              ${p.name} 
-              ${!p.is_available ? '<span class="bg-red-100 text-red-600 text-xs px-2 py-1 rounded-full font-semibold">AGOTADO</span>' : ''}
-            </h3>
-            <p class="text-sm text-gray-500 leading-tight mt-1">${p.description || ''}</p>
-          </div>
-          <div class="text-right">
-            <span class="font-bold text-blue-600 text-lg">$${p.price.toLocaleString('es-CL')}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    loadMenu();
-    supabase.channel('public:products')
-      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'products' }, loadMenu)
-      .subscribe();
-  </script>
 </body>
 </html>
