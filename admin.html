@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin | CRUD Pro</title>
-  <!-- Tailwind CSS local -->
   <script src="js/vendor/tailwind.js"></script>
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen p-4 flex items-center justify-center">
@@ -49,11 +48,13 @@
     </div>
   </div>
 
-  <!-- Librería base de Supabase por CDN unpkg -->
+  <!-- 1. Librería Supabase -->
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
   
-  <!-- Orden estricto de dependencias -->
-  <script src="js/config.js" defer></script>
+  <!-- 2. Configuración SIN defer -->
+  <script src="js/config.js"></script>
+  
+  <!-- 3. Inicializador y lógica -->
   <script src="js/supabase.js" defer></script>
   <script src="js/admin/auth.js" defer></script>
   <script src="js/admin/stock.js" defer></script>
