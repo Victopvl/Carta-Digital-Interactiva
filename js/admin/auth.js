@@ -21,7 +21,8 @@ function checkPin() {
         authSection.classList.add('hidden');
         adminSection.classList.remove('hidden');
 
-        loadStock();
+        // Activamos de manera limpia la carga inicial Y el tiempo real
+        initStock();
     } else {
         alert('PIN incorrecto');
 
