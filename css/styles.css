@@ -1,8 +1,33 @@
-/* ============================================
-   CARTA DIGITAL INTERACTIVA
-   Estilos propios del proyecto
-   ============================================ */
+/* ==========================================================================
+   CARTA DIGITAL INTERACTIVA - CORE STYLES
+   ========================================================================== */
 
-body {
-    margin: 0;
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(0.98); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Transición suave para cambios de estado en tiempo real (Disponible <-> Agotado) */
+article, button {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Custom Scrollbar minimalista para dispositivos móviles */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 20px;
+}
+.bg-gray-900 ::-webkit-scrollbar-thumb {
+  background: #475569;
 }
