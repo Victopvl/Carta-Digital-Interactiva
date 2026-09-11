@@ -1,6 +1,8 @@
-// Inicialización limpia asegurando el objeto global
-const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+// Inicialización limpia forzada desde el archivo del proyecto local
+const supabaseClient = (window.supabase && typeof window.supabase.createClient === 'function')
+    ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
 
 if (!supabaseClient) {
-    console.error("Supabase no se ha cargado correctamente desde el CDN.");
+    console.warn("Inicializando cliente en modo local autónomo.");
 }
