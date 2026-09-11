@@ -1,9 +1,14 @@
-// ============================================
-// CARTA DIGITAL INTERACTIVA
-// Admin Stock
-// ============================================
-
 const stockContainer = document.getElementById('stock-container');
+const modalForm = document.getElementById('modal-form');
+const modalTitle = document.getElementById('modal-title');
+
+// Inputs Form
+const fId = document.getElementById('form-id');
+const fName = document.getElementById('form-name');
+const fCategory = document.getElementById('form-category');
+const fPrice = document.getElementById('form-price');
+const fImage = document.getElementById('form-image');
+const fDescription = document.getElementById('form-description');
 
 function escapeStockHTML(value) {
     const div = document.createElement('div');
@@ -11,142 +16,99 @@ function escapeStockHTML(value) {
     return div.innerHTML;
 }
 
+let localProducts = [];
+
 function renderStock(products) {
     if (!stockContainer) return;
-
-    if (!products || products.length === 0) {
-        stockContainer.innerHTML = `
-            <p class="text-gray-400 text-center py-4">
-                No hay productos registrados.
-            </p>
-        `;
+    localProducts = products;
+    if (products.length === 0) {
+        stockContainer.innerHTML = `<p class="text-gray-400 text-center col-span-2 py-4">No hay productos en inventario.</p>`;
         return;
     }
 
     stockContainer.innerHTML = products.map(product => {
-        const available = product.is_available;
-
+        const avail = product.is_available;
         return `
-            <div class="flex items-center justify-between gap-4 
-                        bg-white border border-gray-200 rounded-xl p-4 shadow-sm">
-
-                <div class="text-left">
-                    <!-- Forzamos text-gray-900 para que el nombre sea negro e invisible sobre blanco -->
-                    <h3 class="font-bold text-gray-900 text-base">
-                        ${escapeStockHTML(product.name)}
-                    </h3>
-                    <!-- Forzamos text-gray-500 para la categoría en gris oscuro -->
-                    <p class="text-xs font-medium text-gray-500 mt-0.5">
-                        ${escapeStockHTML(product.category)}
-                    </p>
+            <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 flex flex-col justify-between gap-3 shadow-sm">
+                <div class="flex gap-3 items-center">
+                    ${product.image_url ? `<img src="${escapeStockHTML(product.image_url)}" class="w-12 h-12 object-cover rounded-lg bg-gray-900">` : ''}
+                    <div class="truncate">
+                        <h3 class="font-bold text-white text-sm truncate">${escapeStockHTML(product.name)}</h3>
+                        <p class="text-xs text-gray-400 uppercase font-semibold">${escapeStockHTML(product.category)}</p>
+                    </div>
                 </div>
-
-                <button
-                    type="button"
-                    onclick="toggleStock('${product.id}', ${!available})"
-                    class="px-4 py-2 rounded-lg font-bold text-xs transition whitespace-nowrap
-                    ${available
-                        ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                        : 'bg-red-100 text-red-700 hover:bg-red-200'
-                    }"
-                >
-                    ${available ? 'DISPONIBLE' : 'AGOTADO'}
-                </button>
-
+                <div class="flex gap-2 justify-between items-center pt-2 border-t border-gray-700/50">
+                    <div class="flex gap-1">
+                        <button onclick="editProduct('${product.id}')" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-xs font-bold text-blue-400">📝 Editar</button>
+                        <button onclick="deleteProduct('${product.id}')" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-xs font-bold text-red-400">🗑️ Borrar</button>
+                    </div>
+                    <button onclick="toggleStock('${product.id}', ${!avail})" class="px-3 py-1.5 rounded-lg text-xs font-black transition
+                        ${avail ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
+                        ${avail ? 'DISPONIBLE' : 'AGOTADO'}
+                    </button>
+                </div>
             </div>
         `;
     }).join('');
 }
 
-
 async function loadStock() {
-    if (!stockContainer) return;
-
-    // Validación preventiva de conexión
-    if (!supabaseClient) {
-        stockContainer.innerHTML = `<p class="text-red-400 text-center">Error: Cliente Supabase no inicializado.</p>`;
-        return;
-    }
-
-    stockContainer.innerHTML = `
-        <p class="text-gray-400 text-center py-4 animate-pulse">
-            Cargando inventario...
-        </p>
-    `;
-
-    try {
-        const { data, error } = await supabaseClient
-            .from('products')
-            .select('*')
-            .order('category')
-            .order('name');
-
-        if (error) {
-            console.error('Error cargando inventario:', error);
-            stockContainer.innerHTML = `
-                <p class="text-red-400 text-center">
-                    No se pudo cargar el inventario.
-                </p>
-            `;
-            return;
-        }
-
-        renderStock(data);
-    } catch (err) {
-        console.error('Excepción al cargar stock:', err);
-    }
+    if (!supabaseClient) return;
+    const { data, error } = await supabaseClient.from('products').select('*').order('name');
+    if (!error) renderStock(data);
 }
 
 async function toggleStock(id, newValue) {
-    if (!supabaseClient) return;
+    await supabaseClient.from('products').update({ is_available: newValue, updated_at: new Date().toISOString() }).eq('id', id);
+    loadStock();
+}
 
-    try {
-        const { error } = await supabaseClient
-            .from('products')
-            .update({
-                is_available: newValue,
-                updated_at: new Date().toISOString()
-            })
-            .eq('id', id);
+// Operaciones del Formulario Modal (CRUD)
+function openForm() {
+    fId.value = ''; fName.value = ''; fCategory.value = ''; fPrice.value = ''; fImage.value = ''; fDescription.value = '';
+    modalTitle.innerText = "Nuevo Producto";
+    modalForm.classList.replace('hidden', 'flex');
+}
 
-        if (error) {
-            console.error('Error actualizando stock:', error);
-            alert('No se pudo actualizar el producto.');
-            return;
-        }
+function closeForm() { modalForm.classList.replace('flex', 'hidden'); }
 
-        await loadStock();
-    } catch (err) {
-        console.error('Excepción al actualizar stock:', err);
+function editProduct(id) {
+    const p = localProducts.find(prod => prod.id === id);
+    if (!p) return;
+    fId.value = p.id; fName.value = p.name; fCategory.value = p.category; fPrice.value = p.price; fImage.value = p.image_url || ''; fDescription.value = p.description || '';
+    modalTitle.innerText = "Editar Producto";
+    modalForm.classList.replace('hidden', 'flex');
+}
+
+async function saveProduct() {
+    const payload = {
+        name: fName.value.trim(),
+        category: fCategory.value.trim(),
+        price: Number(fPrice.value),
+        image_url: fImage.value.trim() || null,
+        description: fDescription.value.trim() || null,
+        updated_at: new Date().toISOString()
+    };
+    if (!payload.name || !payload.category || !payload.price) { alert('Completa los campos obligatorios'); return; }
+
+    if (fId.value) {
+        await supabaseClient.from('products').update(payload).eq('id', fId.value);
+    } else {
+        await supabaseClient.from('products').insert([payload]);
+    }
+    closeForm();
+    loadStock();
+}
+
+async function deleteProduct(id) {
+    if (confirm('¿Seguro que deseas eliminar este producto de la carta?')) {
+        await supabaseClient.from('products').delete().eq('id', id);
+        loadStock();
     }
 }
 
-// ============================================
-// REALTIME & INITIALIZATION
-// ============================================
-
 function initStock() {
-    if (!supabaseClient) {
-        console.error("Supabase no está disponible para el panel de administración.");
-        return;
-    }
-
-    // Carga los productos por primera vez
+    if (!supabaseClient) return;
     loadStock();
-
-    // Activa la escucha en tiempo real
-    supabaseClient
-        .channel('admin:products')
-        .on(
-            'postgres_changes',
-            {
-                event: '*',
-                schema: 'public',
-                table: 'products'
-            },
-            () => {
-                loadStock();
-            }
-        )
-        .subscribe();
+    supabaseClient.channel('admin:products').on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { loadStock(); }).subscribe();
 }
