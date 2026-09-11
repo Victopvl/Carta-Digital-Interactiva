@@ -100,8 +100,29 @@ async function loadMenu() {
 }
 
 function init() {
-    if (!supabaseClient) return;
+    // Si por alguna razón el HTML aún no carga los inputs, esperamos un milisegundo
+    if (!menuContainer) {
+        console.error("Contenedor del menú no encontrado en el DOM.");
+        return;
+    }
+    
     loadMenu();
-    supabaseClient.channel('public:products').on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { loadMenu(); }).subscribe();
+
+    if (supabaseClient) {
+        supabaseClient
+            .channel('public:products')
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { 
+                loadMenu(); 
+            })
+            .subscribe();
+    } else {
+        console.error("Supabase client no está disponible en init()");
+    }
 }
-init();
+
+// Forzar la ejecución segura cuando el DOM esté completamente listo
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+} else {
+    init();
+}
