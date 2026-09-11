@@ -4,20 +4,17 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin | CRUD Pro</title>
-  <!-- ENLACE CORRECTO: Motor de Tailwind CSS desde un CDN estable -->
   <script src="https://cloudflare.com"></script>
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen p-4 flex items-center justify-center">
 
   <div class="w-full max-w-4xl bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-xl">
-    <!-- Login -->
     <div id="auth-section" class="flex flex-col items-center justify-center py-12 space-y-4">
       <h2 class="text-2xl font-black">Acceso Staff MVP</h2>
       <input type="password" id="pin-input" placeholder="••••" maxlength="4" class="p-3 rounded-xl bg-gray-900 border border-gray-700 text-center text-2xl w-44 tracking-widest font-mono text-white">
       <button onclick="checkPin()" class="bg-blue-600 hover:bg-blue-700 text-white w-44 py-3 rounded-xl font-bold">Ingresar</button>
     </div>
 
-    <!-- Panel Completo -->
     <div id="admin-section" class="hidden space-y-6">
       <header class="flex justify-between items-center border-b border-gray-700 pb-4">
         <div>
@@ -29,32 +26,29 @@
           <button onclick="location.reload()" class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-xl text-xs font-semibold">Salir</button>
         </div>
       </header>
-
       <main id="stock-container" class="grid gap-4 sm:grid-cols-2"></main>
     </div>
   </div>
 
-  <!-- Formulario Modal Inteligente (Crear / Editar) -->
   <div id="modal-form" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 w-full max-w-md space-y-4">
       <h3 id="modal-title" class="text-lg font-bold text-white">Nuevo Producto</h3>
       <input type="hidden" id="form-id">
       <div class="space-y-3">
-        <input type="text" id="form-name" placeholder="Nombre (Ej: Flat White)" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white focus:outline-none focus:border-blue-500">
-        <input type="text" id="form-category" placeholder="Categoría (Ej: Café)" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white focus:outline-none focus:border-blue-500">
-        <input type="number" id="form-price" placeholder="Precio (Ej: 3200)" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white focus:outline-none focus:border-blue-500">
-        <input type="text" id="form-image" placeholder="URL Foto (Unsplash)" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white focus:outline-none focus:border-blue-500">
-        <textarea id="form-description" placeholder="Descripción corta del plato..." rows="2" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white focus:outline-none focus:border-blue-500"></textarea>
+        <input type="text" id="form-name" placeholder="Nombre" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white">
+        <input type="text" id="form-category" placeholder="Categoría" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white">
+        <input type="number" id="form-price" placeholder="Precio" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white">
+        <input type="text" id="form-image" placeholder="URL Foto" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white">
+        <textarea id="form-description" placeholder="Descripción..." rows="2" class="w-full p-2.5 rounded-lg bg-gray-900 border border-gray-700 text-sm text-white"></textarea>
       </div>
       <div class="flex justify-end gap-2 pt-2">
         <button onclick="closeForm()" class="px-4 py-2 bg-gray-700 text-xs font-bold rounded-lg">Cancelar</button>
-        <button onclick="saveProduct()" class="px-4 py-2 bg-blue-600 text-xs font-bold rounded-lg">Guardar Cambios</button>
+        <button onclick="saveProduct()" class="px-4 py-2 bg-blue-600 text-xs font-bold rounded-lg">Guardar</button>
       </div>
     </div>
   </div>
 
-  <!-- ENLACE CORRECTO: Librería oficial de Supabase alojada en servidores estables -->
-  <script src="https://cloudflare.com"></script>
+  <!-- SÓLO ESTOS CUATRO ARCHIVOS LOCALES EN ESTE ORDEN -->
   <script src="js/config.js"></script>
   <script src="js/supabase.js"></script>
   <script src="js/admin/auth.js"></script>
