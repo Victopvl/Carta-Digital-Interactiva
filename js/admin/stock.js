@@ -53,14 +53,25 @@ function renderStock(products) {
 }
 
 async function loadStock() {
-    if (!supabaseClient) return;
-    const { data, error } = await supabaseClient.from('products').select('*').order('name');
-    if (!error) renderStock(data);
+    if (!window.supabaseClient) return;
+    
+    try {
+        const { data, error } = await window.supabaseClient.from('products').select('*').order('name');
+        if (error) throw error;
+        renderStock(data);
+    } catch (err) {
+        console.error("Error al cargar inventario:", err);
+        if (stockContainer) stockContainer.innerHTML = `<p class="text-red-400 text-center col-span-2 py-4">Error de conexión al cargar datos.</p>`;
+    }
 }
 
 async function toggleStock(id, newValue) {
-    await supabaseClient.from('products').update({ is_available: newValue, updated_at: new Date().toISOString() }).eq('id', id);
-    loadStock();
+    try {
+        await window.supabaseClient.from('products').update({ is_available: newValue, updated_at: new Date().toISOString() }).eq('id', id);
+        loadStock();
+    } catch(err) {
+        alert("Hubo un error al actualizar el stock");
+    }
 }
 
 // Operaciones del Formulario Modal (CRUD)
@@ -91,24 +102,35 @@ async function saveProduct() {
     };
     if (!payload.name || !payload.category || !payload.price) { alert('Completa los campos obligatorios'); return; }
 
-    if (fId.value) {
-        await supabaseClient.from('products').update(payload).eq('id', fId.value);
-    } else {
-        await supabaseClient.from('products').insert([payload]);
+    try {
+        if (fId.value) {
+            await window.supabaseClient.from('products').update(payload).eq('id', fId.value);
+        } else {
+            await window.supabaseClient.from('products').insert([payload]);
+        }
+        closeForm();
+        loadStock();
+    } catch(err) {
+        alert("Error al guardar el producto");
     }
-    closeForm();
-    loadStock();
 }
 
 async function deleteProduct(id) {
     if (confirm('¿Seguro que deseas eliminar este producto de la carta?')) {
-        await supabaseClient.from('products').delete().eq('id', id);
-        loadStock();
+        try {
+            await window.supabaseClient.from('products').delete().eq('id', id);
+            loadStock();
+        } catch(err) {
+            alert("Error al eliminar");
+        }
     }
 }
 
 function initStock() {
-    if (!supabaseClient) return;
+    if (!window.supabaseClient) {
+        console.error("No se encontró el cliente de Supabase en el panel de admin");
+        return;
+    }
     loadStock();
-    supabaseClient.channel('admin:products').on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { loadStock(); }).subscribe();
+    window.supabaseClient.channel('admin:products').on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { loadStock(); }).subscribe();
 }

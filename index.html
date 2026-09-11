@@ -4,8 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Café de Especialidad | Carta Digital</title>
-  <!-- Motor de diseño Tailwind CSS distribuido desde un CDN alternativo limpio -->
-  <script src="https://cloudflare.com"></script>
+  
+  <!-- 1. Motor de diseño Tailwind CSS (Carga local para evitar bloqueos) -->
+  <script src="js/vendor/tailwind.js"></script>
+  
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -37,10 +39,12 @@
     </main>
   </div>
 
-  <!-- LIBRERÍA DE SUPABASE DESDE CDNJS (Evita el bloqueo de jsDelivr) -->
-  <script src="https://cloudflare.com"></script>
-  <script src="js/config.js"></script>
-  <script src="js/supabase.js"></script>
-  <script src="js/public/menu.js"></script>
+  <!-- 2. LIBRERÍA DE SUPABASE (Carga local para evitar bloqueos) -->
+  <script src="js/vendor/supabase.js"></script>
+  
+  <!-- 3. Configuración, inicialización y lógica (con defer para no bloquear el HTML) -->
+  <script src="js/config.js" defer></script>
+  <script src="js/supabase.js" defer></script>
+  <script src="js/public/menu.js" defer></script>
 </body>
 </html>

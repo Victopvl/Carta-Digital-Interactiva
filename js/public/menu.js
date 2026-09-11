@@ -91,36 +91,54 @@ function renderMenu(products) {
 
 async function loadMenu() {
     try {
-        const { data, error } = await supabaseClient.from('products').select('*').order('name');
-        if (error) return;
+        // Agregamos un Timeout de 8 segundos para evitar que se quede congelado
+        const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout de conexión')), 8000));
+        const request = window.supabaseClient.from('products').select('*').order('name');
+        
+        // Compite la consulta real contra el timeout
+        const { data, error } = await Promise.race([request, timeout]);
+        
+        if (error) throw error; // Lanza el error al catch
+
         globalProducts = data;
         renderFilterButtons();
         filterProducts();
-    } catch (err) { console.error(err); }
+    } catch (err) { 
+        console.error("Fallo al cargar el menú:", err);
+        // MATAR EL CARGADOR "Sincronizando mesones..." y mostrar el error al usuario
+        if (menuContainer) {
+            menuContainer.innerHTML = `
+                <div class="text-center py-16">
+                    <p class="text-red-500 font-bold mb-2">Sin conexión al servidor.</p>
+                    <p class="text-stone-500 text-sm mb-4">Revisa tu internet o intenta recargar.</p>
+                    <button onclick="location.reload()" class="bg-amber-800 text-white px-4 py-2 rounded-xl text-xs font-bold">Reintentar</button>
+                </div>`;
+        }
+    }
 }
 
 function init() {
-    // Si por alguna razón el HTML aún no carga los inputs, esperamos un milisegundo
     if (!menuContainer) {
         console.error("Contenedor del menú no encontrado en el DOM.");
         return;
     }
     
+    if (!window.supabaseClient) {
+        console.error("Supabase client no está disponible en init()");
+        menuContainer.innerHTML = `<p class="text-center text-red-500 font-bold py-20">Error de inicialización de Base de Datos.</p>`;
+        return;
+    }
+
     loadMenu();
 
-    if (supabaseClient) {
-        supabaseClient
-            .channel('public:products')
-            .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { 
-                loadMenu(); 
-            })
-            .subscribe();
-    } else {
-        console.error("Supabase client no está disponible en init()");
-    }
+    window.supabaseClient
+        .channel('public:products')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { 
+            loadMenu(); 
+        })
+        .subscribe();
 }
 
-// Forzar la ejecución segura cuando el DOM esté completamente listo
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
 } else {
