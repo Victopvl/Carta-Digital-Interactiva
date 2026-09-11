@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin | CRUD Pro</title>
-  <!-- 1. CORREGIDO: Carga local de Tailwind para evitar el error de Cloudflare -->
+  <!-- Tailwind CSS local -->
   <script src="js/vendor/tailwind.js"></script>
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen p-4 flex items-center justify-center">
@@ -49,8 +49,8 @@
     </div>
   </div>
 
-  <!-- 2. CORREGIDO: Orden estricto de dependencias -->
-  <script src="js/vendor/supabase.js" defer></script> <!-- Faltaba la librería base -->
+  <!-- Orden estricto de dependencias local -->
+  <script src="js/vendor/supabase.js"></script>
   <script src="js/config.js" defer></script>
   <script src="js/supabase.js" defer></script>
   <script src="js/admin/auth.js" defer></script>
