@@ -4,10 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Café de Especialidad | Carta Digital</title>
+  <!-- CDN Alternativo de Tailwind mediante unpkg (Espejo de respaldo) -->
   <script src="https://unpkg.com"></script>
-  <script src="https://tailwindcss.com"></script>
   <style>
-    /* Estilos de emergencia integrados por si falla el archivo CSS externo */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     article, button { transition: all 0.3s ease; }
@@ -16,14 +15,14 @@
 <body class="bg-amber-50/30 text-stone-800 font-sans min-h-screen">
   
   <div class="max-w-5xl mx-auto px-4 py-6">
-    <!-- Header -->
+    <!-- Header con Identidad del Local -->
     <header class="text-center my-6 flex flex-col items-center">
       <div class="w-16 h-16 bg-stone-900 text-stone-100 flex items-center justify-center rounded-full text-2xl font-black shadow-md tracking-wider mb-2">CO</div>
       <h1 class="text-2xl font-black text-stone-950 tracking-tight">CRAFT OVEN</h1>
       <p class="text-[10px] uppercase font-bold tracking-widest text-amber-800 mt-1">Cafetería & Pastelería de Especialidad</p>
     </header>
 
-    <!-- Barra de Controles -->
+    <!-- Barra de Controles (Buscador y Filtros) -->
     <div class="mb-6 space-y-3 sticky top-0 bg-stone-50/95 backdrop-blur-md py-3 z-30 border-b border-stone-200/60">
       <input type="text" id="search-input" oninput="filterProducts()" placeholder="🔍 Buscar tu producto favorito..." class="w-full p-3.5 rounded-xl border border-stone-200 bg-white text-sm shadow-sm focus:outline-none focus:border-amber-600 focus:ring-1 focus:ring-amber-600 text-stone-900">
       <div id="categories-filter" class="flex gap-2 overflow-x-auto pb-1 no-scrollbar">
@@ -38,7 +37,8 @@
     </main>
   </div>
 
-  <script src="https://unpkg.com"></script>
+  <!-- Cambio de CDN crítico a cdnjs (Servidores globales de Cloudflare) -->
+  <script src="https://cloudflare.com"></script>
   <script src="js/config.js"></script>
   <script src="js/supabase.js"></script>
   <script src="js/public/menu.js"></script>
