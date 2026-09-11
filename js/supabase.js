@@ -1,4 +1,4 @@
-// Conector oficial estándar
+// Conector oficial limpio
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 if (!supabaseClient) {
