@@ -72,7 +72,7 @@ function renderMenu(products) {
                         const avail = product.is_available;
                         return `
                             <article class="bg-white rounded-2xl border border-stone-100 p-4 shadow-sm flex gap-4 items-center relative overflow-hidden transition-all ${!avail ? 'opacity-50 select-none' : ''}">
-                                ${product.image_url ? `<img src="${escapeHTML(product.image_url)}" class="w-20 h-20 rounded-xl object-cover bg-stone-100 flex-shrink-0 ${!avail ? 'grayscale' : ''}">` : ''}
+                                ${product.image_url ? `<img src="${escapeHTML(product.image_url)}" loading="lazy" class="w-20 h-20 rounded-xl object-cover bg-stone-100 flex-shrink-0 ${!avail ? 'grayscale' : ''}">` : ''}
                                 <div class="flex-1 min-w-0">
                                     <div class="flex justify-between items-start gap-2">
                                         <h3 class="font-bold text-stone-900 text-base truncate ${!avail ? 'line-through text-stone-400' : ''}">${escapeHTML(product.name)}</h3>
@@ -91,7 +91,7 @@ function renderMenu(products) {
 
 async function loadMenu() {
     try {
-        // Agregamos un Timeout de 8 segundos para evitar que se quede congelado
+        // Timeout de 8 segundos para evitar que se quede congelado
         const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout de conexión')), 8000));
         const request = window.supabaseClient.from('products').select('*').order('name');
         
@@ -105,7 +105,7 @@ async function loadMenu() {
         filterProducts();
     } catch (err) { 
         console.error("Fallo al cargar el menú:", err);
-        // MATAR EL CARGADOR "Sincronizando mesones..." y mostrar el error al usuario
+        // Mostrar el error al usuario
         if (menuContainer) {
             menuContainer.innerHTML = `
                 <div class="text-center py-16">
@@ -131,9 +131,13 @@ function init() {
 
     loadMenu();
 
+    // Limpiamos canales previos por seguridad antes de suscribirnos
+    window.supabaseClient.removeAllChannels();
+    
     window.supabaseClient
         .channel('public:products')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { 
+            // Si el admin modifica algo, recargamos la data silenciosamente
             loadMenu(); 
         })
         .subscribe();

@@ -1,37 +1,5 @@
 // ============================================
 // CARTA DIGITAL INTERACTIVA
-// Admin Authentication
-// ============================================
-
-const PIN_SECRETO = '1234';
-
-function checkPin() {
-    const pinInput = document.getElementById('pin-input');
-    const authSection = document.getElementById('auth-section');
-    const adminSection = document.getElementById('admin-section');
-
-    if (!pinInput || !authSection || !adminSection) {
-        console.error('Elementos de autenticación no encontrados.');
-        return;
-    }
-
-    const pin = pinInput.value.trim();
-
-    if (pin === PIN_SECRETO) {
-        authSection.classList.add('hidden');
-        adminSection.classList.remove('hidden');
-
-        // Activamos de manera limpia la carga inicial Y el tiempo real
-        initStock();
-    } else {
-        alert('PIN incorrecto');
-
-        pinInput.value = '';
-        pinInput.focus();
-    }
-}
-// ============================================
-// CARTA DIGITAL INTERACTIVA
 // Admin Authentication (Supabase Auth)
 // ============================================
 
@@ -54,19 +22,16 @@ async function checkLogin() {
         return;
     }
 
-    // Cambiamos el texto del botón mientras carga
     const btn = event.currentTarget || document.querySelector('#auth-section button');
     const originalText = btn.innerText;
     btn.innerText = 'Validando...';
     btn.disabled = true;
 
-    // Autenticación real contra Supabase
     const { data, error } = await window.supabaseClient.auth.signInWithPassword({
         email: email,
         password: password,
     });
 
-    // Restauramos el botón
     btn.innerText = originalText;
     btn.disabled = false;
 
@@ -77,12 +42,45 @@ async function checkLogin() {
         return;
     }
 
-    // Login exitoso: Supabase guardó el token
+    // Login exitoso
     authSection.classList.add('hidden');
     adminSection.classList.remove('hidden');
 
-    // Iniciamos la carga del stock protegido
     if (typeof initStock === 'function') {
         initStock();
     }
+}
+
+// Función para cerrar sesión explícitamente desde el botón "Salir"
+async function logoutAdmin() {
+    if (window.supabaseClient) {
+        await window.supabaseClient.auth.signOut();
+    }
+    location.reload();
+}
+
+// Verificar sesión activa al cargar la página
+async function initAuth() {
+    // Esperar un instante a que cargue el cliente de Supabase si es necesario
+    if (!window.supabaseClient) return;
+
+    const { data: { session } } = await window.supabaseClient.auth.getSession();
+    
+    const authSection = document.getElementById('auth-section');
+    const adminSection = document.getElementById('admin-section');
+
+    if (session && authSection && adminSection) {
+        // Si hay sesión válida, saltamos el login y abrimos el panel
+        authSection.classList.add('hidden');
+        adminSection.classList.remove('hidden');
+        if (typeof initStock === 'function') {
+            initStock();
+        }
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAuth);
+} else {
+    initAuth();
 }
