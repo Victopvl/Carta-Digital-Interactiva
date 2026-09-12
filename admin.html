@@ -8,13 +8,17 @@
 </head>
 <body class="bg-gray-900 text-white font-sans min-h-screen p-4 flex items-center justify-center">
 
-  <div class="w-full max-w-4xl bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-xl">
+  <div class="max-w-4xl w-full bg-gray-800 rounded-2xl border border-gray-700 p-6 shadow-xl">
+    
+    <!-- Sección de Autenticación Supabase -->
     <div id="auth-section" class="flex flex-col items-center justify-center py-12 space-y-4">
       <h2 class="text-2xl font-black">Acceso Staff MVP</h2>
-      <input type="password" id="pin-input" placeholder="••••" maxlength="4" class="p-3 rounded-xl bg-gray-900 border border-gray-700 text-center text-2xl w-44 tracking-widest font-mono text-white">
-      <button onclick="checkPin()" class="bg-blue-600 hover:bg-blue-700 text-white w-44 py-3 rounded-xl font-bold">Ingresar</button>
+      <input type="email" id="email-input" placeholder="admin@craftoven.com" class="p-3 rounded-xl bg-gray-900 border border-gray-700 text-center w-64 text-white text-sm focus:outline-none focus:border-blue-500">
+      <input type="password" id="password-input" placeholder="Contraseña" class="p-3 rounded-xl bg-gray-900 border border-gray-700 text-center w-64 text-white tracking-widest font-mono focus:outline-none focus:border-blue-500">
+      <button onclick="checkLogin(event)" class="bg-blue-600 hover:bg-blue-700 text-white w-64 py-3 rounded-xl font-bold transition-colors">Ingresar</button>
     </div>
 
+    <!-- Panel de Administración (Oculto por defecto) -->
     <div id="admin-section" class="hidden space-y-6">
       <header class="flex justify-between items-center border-b border-gray-700 pb-4">
         <div>
@@ -23,13 +27,14 @@
         </div>
         <div class="flex gap-2">
           <button onclick="openForm()" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-xl text-xs font-bold">+ Nuevo Producto</button>
-          <button onclick="location.reload()" class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-xl text-xs font-semibold">Salir</button>
+          <button onclick="logoutAdmin()" class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-xl text-xs font-semibold">Salir</button>
         </div>
       </header>
       <main id="stock-container" class="grid gap-4 sm:grid-cols-2"></main>
     </div>
   </div>
 
+  <!-- Modal para CRUD de Productos -->
   <div id="modal-form" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
     <div class="bg-gray-800 border border-gray-700 rounded-2xl p-6 w-full max-w-md space-y-4">
       <h3 id="modal-title" class="text-lg font-bold text-white">Nuevo Producto</h3>
