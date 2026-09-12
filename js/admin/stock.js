@@ -57,21 +57,27 @@ async function loadStock() {
     
     try {
         const { data, error } = await window.supabaseClient.from('products').select('*').order('name');
-        if (error) throw error;
+        if (error) throw error; // Aquí forzamos el catch si hay error de lectura
         renderStock(data);
     } catch (err) {
-        console.error("Error al cargar inventario:", err);
-        if (stockContainer) stockContainer.innerHTML = `<p class="text-red-400 text-center col-span-2 py-4">Error de conexión al cargar datos.</p>`;
+        console.error("Error al cargar inventario:", err.message);
+        if (stockContainer) stockContainer.innerHTML = `<p class="text-red-400 text-center col-span-2 py-4">Error al cargar datos. Verifica tu conexión.</p>`;
     }
 }
 
 async function toggleStock(id, newValue) {
-    try {
-        await window.supabaseClient.from('products').update({ is_available: newValue, updated_at: new Date().toISOString() }).eq('id', id);
-        loadStock();
-    } catch(err) {
-        alert("Hubo un error al actualizar el stock");
+    // Verificamos el 'error' que devuelve Supabase internamente
+    const { error } = await window.supabaseClient.from('products')
+        .update({ is_available: newValue, updated_at: new Date().toISOString() })
+        .eq('id', id);
+        
+    if (error) {
+        console.error("Error RLS/Auth:", error.message);
+        alert("Acceso denegado: Tu sesión puede haber expirado. Recarga la página.");
+        return;
     }
+    
+    loadStock();
 }
 
 // Operaciones del Formulario Modal (CRUD)
@@ -102,27 +108,38 @@ async function saveProduct() {
     };
     if (!payload.name || !payload.category || !payload.price) { alert('Completa los campos obligatorios'); return; }
 
-    try {
-        if (fId.value) {
-            await window.supabaseClient.from('products').update(payload).eq('id', fId.value);
-        } else {
-            await window.supabaseClient.from('products').insert([payload]);
-        }
-        closeForm();
-        loadStock();
-    } catch(err) {
-        alert("Error al guardar el producto");
+    let opError = null;
+    
+    // Capturamos los errores de la API explícitamente
+    if (fId.value) {
+        const { error } = await window.supabaseClient.from('products').update(payload).eq('id', fId.value);
+        opError = error;
+    } else {
+        const { error } = await window.supabaseClient.from('products').insert([payload]);
+        opError = error;
     }
+    
+    if (opError) {
+        console.error("Error al guardar:", opError.message);
+        alert("No tienes permisos para guardar. Inicia sesión nuevamente.");
+        return;
+    }
+    
+    closeForm();
+    loadStock();
 }
 
 async function deleteProduct(id) {
     if (confirm('¿Seguro que deseas eliminar este producto de la carta?')) {
-        try {
-            await window.supabaseClient.from('products').delete().eq('id', id);
-            loadStock();
-        } catch(err) {
-            alert("Error al eliminar");
+        const { error } = await window.supabaseClient.from('products').delete().eq('id', id);
+        
+        if (error) {
+            console.error("Error al eliminar:", error.message);
+            alert("No tienes permisos para borrar. Inicia sesión nuevamente.");
+            return;
         }
+        
+        loadStock();
     }
 }
 
@@ -132,5 +149,9 @@ function initStock() {
         return;
     }
     loadStock();
-    window.supabaseClient.channel('admin:products').on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { loadStock(); }).subscribe();
+    // Previene múltiples suscripciones si la función se llama varias veces
+    window.supabaseClient.removeAllChannels(); 
+    window.supabaseClient.channel('admin:products')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { loadStock(); })
+        .subscribe();
 }
