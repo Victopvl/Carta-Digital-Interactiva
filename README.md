@@ -3,7 +3,7 @@
 > Sistema de gestión gastronómica en tiempo real para la orquestación automatizada de inventario y cartas digitales móviles bajo una arquitectura serverless zero-build con un costo operativo de $0 USD.
 
 [🌐 Ver demo en vivo]([https://carta-digital-interactiva.vercel.app/]([https://carta-digital-interactiva.vercel.app/](https://carta-digital-interactiva.vercel.app/)))
-[⚙️ Panel de Administración]([[https://www.google.com/search?q=https://carta-digital-interactiva.vercel.app/admin.html](https://carta-digital-interactiva.vercel.app/))](https://carta-digital-interactiva.vercel.app/)
+[⚙️ Panel de Administración]([[https://www.google.com/search?q=https://carta-digital-interactiva.vercel.app/admin.html](https://carta-digital-interactiva.vercel.app/))](https://carta-digital-interactiva.vercel.app/admin.html)
 
 ---
 
