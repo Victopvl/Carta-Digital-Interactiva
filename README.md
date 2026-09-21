@@ -1,7 +1,3 @@
-Aquí tienes la propuesta de **README.md** adaptada exactamente al estilo, tono y estructura técnica de tu proyecto **`LifeStyle-Core`**, manteniendo todos los datos reales del proyecto de la Carta Digital B2B (Stack Zero-Build, Vercel, Supabase Realtime, etc.).
-
----
-
 # Carta-Digital-Interactive-B2B
 
 > Sistema de gestión gastronómica en tiempo real para la orquestación automatizada de inventario y cartas digitales móviles bajo una arquitectura serverless zero-build con un costo operativo de $0 USD.
@@ -346,3 +342,4 @@ Estudiante de Ingeniería Civil Informática — Universidad Andrés Bello[cite:
 ## 📄 Licencia
 
 Proyecto desarrollado con fines de demostración profesional y portfolio B2B[cite: 1, 3].
+](https://carta-digital-interactiva.vercel.app/)
