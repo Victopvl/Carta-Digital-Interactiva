@@ -18,32 +18,53 @@ function escapeStockHTML(value) {
 
 let localProducts = [];
 
+// 1. Datalist ramaddii (categories) addatti calalee heddummina malee qulqulleessu
+function updateCategoryDatalist(products) {
+    const datalist = document.getElementById('categories-list');
+    if (!datalist || !products) return;
+
+    const categories = [...new Set(products
+        .map(p => p.category ? p.category.trim().toUpperCase() : '')
+        .filter(c => c !== '')
+    )].sort();
+
+    datalist.innerHTML = categories
+        .map(cat => `<option value="${escapeStockHTML(cat)}">`)
+        .join('');
+}
+
 function renderStock(products) {
     if (!stockContainer) return;
     localProducts = products;
+
+    // Actualiza el datalist de categorías automáticamente
+    if (typeof updateCategoryDatalist === 'function') {
+        updateCategoryDatalist(products);
+    }
+
     if (products.length === 0) {
-        stockContainer.innerHTML = `<p class="text-gray-400 text-center col-span-2 py-4">No hay productos en inventario.</p>`;
+        stockContainer.innerHTML = `<p class="text-stone-400 text-center col-span-2 py-4">No hay productos en inventario.</p>`;
         return;
     }
 
     stockContainer.innerHTML = products.map(product => {
         const avail = product.is_available;
         return `
-            <div class="bg-gray-800 border border-gray-700 rounded-xl p-4 flex flex-col justify-between gap-3 shadow-sm">
+            <div class="bg-white border border-stone-200/60 rounded-xl p-4 flex flex-col justify-between gap-3 shadow-sm">
                 <div class="flex gap-3 items-center">
-                    ${product.image_url ? `<img src="${escapeStockHTML(product.image_url)}" class="w-12 h-12 object-cover rounded-lg bg-gray-900">` : ''}
+                    ${product.image_url ? `<img src="${escapeStockHTML(product.image_url)}" class="w-12 h-12 object-cover rounded-lg bg-stone-100 flex-shrink-0">` : ''}
                     <div class="truncate">
-                        <h3 class="font-bold text-white text-sm truncate">${escapeStockHTML(product.name)}</h3>
-                        <p class="text-xs text-gray-400 uppercase font-semibold">${escapeStockHTML(product.category)}</p>
+                        <h3 class="font-bold text-stone-800 text-sm truncate">${escapeStockHTML(product.name)}</h3>
+                        <p class="text-xs text-stone-400 uppercase font-semibold">${escapeStockHTML(product.category)}</p>
                     </div>
                 </div>
-                <div class="flex gap-2 justify-between items-center pt-2 border-t border-gray-700/50">
+                <div class="flex gap-2 justify-between items-center pt-2 border-t border-stone-100">
                     <div class="flex gap-1">
-                        <button onclick="editProduct('${product.id}')" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-xs font-bold text-blue-400">📝 Editar</button>
-                        <button onclick="deleteProduct('${product.id}')" class="p-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-xs font-bold text-red-400">🗑️ Borrar</button>
+                        <button onclick="editProduct('${product.id}')" class="px-2.5 py-1.5 bg-stone-50 hover:bg-stone-100 border border-stone-200/60 rounded-lg text-xs font-semibold text-stone-600 transition-colors">📝 Editar</button>
+                        <button onclick="deleteProduct('${product.id}')" class="px-2.5 py-1.5 bg-stone-50 hover:bg-stone-100 border border-stone-200/60 rounded-lg text-xs font-semibold text-stone-600 transition-colors">🗑️ Borrar</button>
                     </div>
-                    <button onclick="toggleStock('${product.id}', ${!avail})" class="px-3 py-1.5 rounded-lg text-xs font-black transition
-                        ${avail ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}">
+                    <button onclick="toggleStock('${product.id}', ${!avail})" class="px-3 py-1.5 rounded-lg text-xs font-black transition-colors
+                        ${avail ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-600 border border-red-200'}">
                         ${avail ? 'DISPONIBLE' : 'AGOTADO'}
                     </button>
                 </div>
@@ -57,7 +78,7 @@ async function loadStock() {
     
     try {
         const { data, error } = await window.supabaseClient.from('products').select('*').order('name');
-        if (error) throw error; // Aquí forzamos el catch si hay error de lectura
+        if (error) throw error;
         renderStock(data);
     } catch (err) {
         console.error("Error al cargar inventario:", err.message);
@@ -66,7 +87,6 @@ async function loadStock() {
 }
 
 async function toggleStock(id, newValue) {
-    // Verificamos el 'error' que devuelve Supabase internamente
     const { error } = await window.supabaseClient.from('products')
         .update({ is_available: newValue, updated_at: new Date().toISOString() })
         .eq('id', id);
@@ -80,7 +100,6 @@ async function toggleStock(id, newValue) {
     loadStock();
 }
 
-// Operaciones del Formulario Modal (CRUD)
 function openForm() {
     fId.value = ''; fName.value = ''; fCategory.value = ''; fPrice.value = ''; fImage.value = ''; fDescription.value = '';
     modalTitle.innerText = "Nuevo Producto";
@@ -97,10 +116,11 @@ function editProduct(id) {
     modalForm.classList.replace('hidden', 'flex');
 }
 
+// 2. saveProduct() ramaddii gara QUBEE GURDAATTI (UPPERCASE) jijjiiree olkaawa
 async function saveProduct() {
     const payload = {
         name: fName.value.trim(),
-        category: fCategory.value.trim(),
+        category: fCategory.value.trim().toUpperCase(),
         price: Number(fPrice.value),
         image_url: fImage.value.trim() || null,
         description: fDescription.value.trim() || null,
@@ -110,7 +130,6 @@ async function saveProduct() {
 
     let opError = null;
     
-    // Capturamos los errores de la API explícitamente
     if (fId.value) {
         const { error } = await window.supabaseClient.from('products').update(payload).eq('id', fId.value);
         opError = error;
@@ -149,7 +168,6 @@ function initStock() {
         return;
     }
     loadStock();
-    // Previene múltiples suscripciones si la función se llama varias veces
     window.supabaseClient.removeAllChannels(); 
     window.supabaseClient.channel('admin:products')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => { loadStock(); })
