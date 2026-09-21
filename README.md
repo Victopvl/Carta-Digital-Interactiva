@@ -10,27 +10,27 @@
 
 ## 🎯 Contexto
 
-Gestionar cartas físicas y control de stock en locales gastronómicos —como cafeterías, restaurantes y pastelerías de especialidad— suele requerir procesos manuales o la reimpresión constante de menús[cite: 1, 4].
+Gestionar cartas físicas y control de stock en locales gastronómicos —como cafeterías, restaurantes y pastelerías de especialidad— suele requerir procesos manuales o la reimpresión constante de menús.
 
-Cuando un cliente selecciona un producto agotado, se genera fricción operativa y una mala experiencia de servicio debido al desfase entre la cocina y la mesa[cite: 4].
+Cuando un cliente selecciona un producto agotado, se genera fricción operativa y una mala experiencia de servicio debido al desfase entre la cocina y la mesa.
 
-Este proyecto propone un **Single Source of Truth (SSOT)** basado en una arquitectura serverless que centraliza la administración del catálogo en tiempo real[cite: 1, 2]. Permite al personal del local alternar la disponibilidad de ítems (*Disponible/Agotado*) e inyectar cambios de forma instantánea a los dispositivos móviles de los clientes mediante WebSockets.
+Este proyecto propone un **Single Source of Truth (SSOT)** basado en una arquitectura serverless que centraliza la administración del catálogo en tiempo real. Permite al personal del local alternar la disponibilidad de ítems (*Disponible/Agotado*) e inyectar cambios de forma instantánea a los dispositivos móviles de los clientes mediante WebSockets.
 
-El proyecto actúa además como una estrategia comercial de **"Caballo de Troya"**[cite: 1, 4]: una solución de entrada de alto valor y bajo costo ($0 CLP Setup + $29.900 CLP/mes) que abre las puertas a proyectos mayores de digitalización operativa en PyMEs[cite: 1, 4].
+El proyecto actúa además como una estrategia comercial de **"Caballo de Troya"**: una solución de entrada de alto valor y bajo costo ($0 CLP Setup + $29.900 CLP/mes) que abre las puertas a proyectos mayores de digitalización operativa en PyMEs.
 
 ---
 
 ## 💡 Solución
 
-Se desarrolló una plataforma web liviana en arquitectura **Zero-Build** (sin empaquetadores como Vite o Webpack) que centraliza[cite: 1, 3]:
+Se desarrolló una plataforma web liviana en arquitectura **Zero-Build** (sin empaquetadores como Vite o Webpack) que centraliza:
 
-* Captura de cambios de stock en tiempo real desde el panel del personal[cite: 1, 4].
-* Motor de datos asíncrono con **Supabase (PostgreSQL)**[cite: 1, 2].
-* Sincronización multi-cliente vía canal pub/sub de **WebSockets (Realtime)**[cite: 1, 2].
-* Interfaz móvil responsive para clientes con filtrado dinámico por categorías y búsqueda predictiva[cite: 1, 2].
-* Panel de administración (*Staff MVP*) protegido con autenticación[cite: 1, 2].
+* Captura de cambios de stock en tiempo real desde el panel del personal.
+* Motor de datos asíncrono con **Supabase (PostgreSQL)**.
+* Sincronización multi-cliente vía canal pub/sub de **WebSockets (Realtime)**.
+* Interfaz móvil responsive para clientes con filtrado dinámico por categorías y búsqueda predictiva.
+* Panel de administración (*Staff MVP*) protegido con autenticación.
 
-La solución prioriza la velocidad de carga en redes móviles de bajo ancho de banda[cite: 1, 3]:
+La solución prioriza la velocidad de carga en redes móviles de bajo ancho de banda:
 
 ```text
 Panel Staff / Garzón (admin.html)
@@ -54,25 +54,25 @@ Carta Digital Cliente (index.html)
 
 ### Carta Digital Cliente (`index.html`)
 
-* Renderizado dinámico de productos por categorías dinámicas[cite: 1, 2].
-* Filtro de búsqueda en tiempo real con sanitización de texto[cite: 1, 2].
-* Sincronización pasiva instantánea cuando un producto cambia a "AGOTADO" o se edita su precio[cite: 1, 2].
-* Renderizado defensivo con *placeholders* en caso de imágenes fallidas o caídas de red[cite: 1, 2].
-
+* Renderizado dinámico de productos por categorías dinámicas.
+* Filtro de búsqueda en tiempo real con sanitización de texto.
+* Sincronización pasiva instantánea cuando un producto cambia a "AGOTADO" o se edita su precio.
+* Renderizado defensivo con *placeholders* en caso de imágenes fallidas o caídas de red.
+  
 ### Panel de Control Staff (`admin.html`)
 
 * Control de stock mediante un botón *Toggle* rápido (*Disponible/Agotado*).
 
 
-* Formulario modal para operaciones CRUD (Crear, Editar, Eliminar productos)[cite: 1, 2].
-* Autenticación de usuarios del personal vía Supabase Auth[cite: 2, 3].
-* Carga asíncrona de categorías mediante elementos de sugerencia inteligente[cite: 5].
+* Formulario modal para operaciones CRUD (Crear, Editar, Eliminar productos).
+* Autenticación de usuarios del personal vía Supabase Auth.
+* Carga asíncrona de categorías mediante elementos de sugerencia inteligente.
 
 ---
 
 ## 🏗️ Arquitectura
 
-El proyecto utiliza una arquitectura híbrida de **Frontend puro (Single Page / Jamstack)** combinada con un **Backend-as-a-Service (BaaS)** proporcionado por Supabase[cite: 1, 2].
+El proyecto utiliza una arquitectura híbrida de **Frontend puro (Single Page / Jamstack)** combinada con un **Backend-as-a-Service (BaaS)** proporcionado por Supabase.
 
 ```text
                Capa 1: Cliente / Usuario
@@ -121,27 +121,27 @@ Capa 3: Motor BaaS              Capa 4: Canal Realtime
 ### Frontend & UI
 
 * HTML5
-* Tailwind CSS (Play CDN / Local Vendor)[cite: 1]
-* Vanilla JavaScript ES6+ (Zero-Build)[cite: 1, 3]
-
+* Tailwind CSS (Play CDN / Local Vendor)
+* Vanilla JavaScript ES6+ (Zero-Build)
+  
 ### Backend & Persistencia (BaaS)
 
-* Supabase (PostgreSQL)[cite: 1, 2]
-* Supabase Realtime (WebSockets)[cite: 1, 2]
-* Supabase Auth & Row Level Security (RLS)[cite: 2, 3]
+* Supabase (PostgreSQL)
+* Supabase Realtime (WebSockets)
+* Supabase Auth & Row Level Security (RLS)
 
 ### Development & Hosting
 
-* Git & GitHub[cite: 1, 2]
-* Vercel (CI/CD Despliegue Continuo)[cite: 1, 2]
+* Git & GitHub
+* Vercel (CI/CD Despliegue Continuo)
 
 ---
 
 ## 📐 Diseño de la solución
 
-La solución fue diseñada bajo un principio de **soberanía, simplicidad y cero costo operativo ($0 USD)**[cite: 1].
+La solución fue diseñada bajo un principio de **soberanía, simplicidad y cero costo operativo ($0 USD)**.
 
-En lugar de construir microservicios complejos o depender de frameworks pesados que requieren tiempo de compilación (como React o Vue), se optó por un enfoque **Zero-Build**[cite: 1, 3]. Esto garantiza que el sitio cargue en menos de 1 segundo en conexiones móviles 3G/4G[cite: 1, 3].
+En lugar de construir microservicios complejos o depender de frameworks pesados que requieren tiempo de compilación (como React o Vue), se optó por un enfoque **Zero-Build**. Esto garantiza que el sitio cargue en menos de 1 segundo en conexiones móviles 3G/4G.
 
 > **Acción del Garzón → Mutación en Supabase PostgreSQL → Emisión WebSocket → Actualización del DOM en los clientes en <100ms.**
 > 
@@ -154,13 +154,13 @@ En lugar de construir microservicios complejos o depender de frameworks pesados 
 
 El alcance actual incluye:
 
-* Vista de menú pública responsive con filtrado dinámico[cite: 1, 2].
-* Sincronización en tiempo real vía WebSockets para cambios de disponibilidad[cite: 1, 2].
+* Vista de menú pública responsive con filtrado dinámico.
+* Sincronización en tiempo real vía WebSockets para cambios de disponibilidad.
 * Panel de administración con control de stock de un solo clic (*Toggle*) y CRUD completo.
 
 
-* Conexión a base de datos de producción en Supabase[cite: 1, 2].
-* Autenticación segura y protección de escrituras mediante Row Level Security (RLS)[cite: 2, 3].
+* Conexión a base de datos de producción en Supabase.
+* Autenticación segura y protección de escrituras mediante Row Level Security (RLS).
 
 ### Fuera del alcance actual
 
@@ -176,22 +176,22 @@ El MVP no incluye inicialmente:
 
 ### Fase 1 — MVP Base
 
-* [x] Esquema inicial en Supabase PostgreSQL[cite: 1, 3]
-* [x] Frontend público responsivo con Tailwind CSS[cite: 1]
-* [x] Panel de administración con operaciones CRUD[cite: 1, 2]
-* [x] Sincronización Realtime por WebSockets[cite: 1, 2]
-* [x] Despliegue continuo en Vercel[cite: 1, 2]
+* [x] Esquema inicial en Supabase PostgreSQL
+* [x] Frontend público responsivo con Tailwind CSS
+* [x] Panel de administración con operaciones CRUD
+* [x] Sincronización Realtime por WebSockets
+* [x] Despliegue continuo en Vercel
 
 ### Fase 2 — Multi-tenancy & Branding
 
-* [ ] Esquema multi-marca (`brands` table) para gestión de múltiples clientes desde una sola instancia[cite: 3]
-* [ ] Carga dinámica de colores corporativos y logos vía parámetros de URL / subdominios[cite: 3]
-* [ ] Selector de idioma (Español / Inglés)[cite: 1]
+* [ ] Esquema multi-marca (`brands` table) para gestión de múltiples clientes desde una sola instancia
+* [ ] Carga dinámica de colores corporativos y logos vía parámetros de URL / subdominios
+* [ ] Selector de idioma (Español / Inglés)
 
 ### Fase 3 — Analítica & Notificaciones
 
-* [ ] Dashboard analítico de productos más buscados y agotados con mayor frecuencia[cite: 6]
-* [ ] Integración con WhatsApp API para notificaciones al personal del local[cite: 6]
+* [ ] Dashboard analítico de productos más buscados y agotados con mayor frecuencia
+* [ ] Integración con WhatsApp API para notificaciones al personal del local
 
 ---
 
@@ -199,19 +199,19 @@ El MVP no incluye inicialmente:
 
 **MVP Funcional — En Producción**
 
-El proyecto se encuentra desplegado en su versión productiva en Vercel y sincronizado con Supabase[cite: 1, 2].
+El proyecto se encuentra desplegado en su versión productiva en Vercel y sincronizado con Supabase.
 
-La lógica de sincronización en tiempo real opera de manera estable mediante suscripciones WebSockets y mecanismos de carga diferida[cite: 1, 2, 5].
+La lógica de sincronización en tiempo real opera de manera estable mediante suscripciones WebSockets y mecanismos de carga diferida.
 
 ---
 
 ## 🔐 Seguridad y configuración
 
-Las credenciales de producción y los tokens se gestionan de manera segura bajo el principio de menor privilegio[cite: 2, 3]:
+Las credenciales de producción y los tokens se gestionan de manera segura bajo el principio de menor privilegio:
 
-* Las escrituras en la base de datos (INSERT, UPDATE, DELETE) están estrictamente protegidas mediante **Row Level Security (RLS)** en Supabase[cite: 2, 3].
-* La API Key pública (`ANON_KEY`) solo posee permisos de lectura (SELECT) para los usuarios anónimos de la carta[cite: 2, 3].
-* Las credenciales globales se inyectan dinámicamente mediante el archivo `js/config.js`[cite: 1, 2].
+* Las escrituras en la base de datos (INSERT, UPDATE, DELETE) están estrictamente protegidas mediante **Row Level Security (RLS)** en Supabase.
+* La API Key pública (`ANON_KEY`) solo posee permisos de lectura (SELECT) para los usuarios anónimos de la carta.
+* Las credenciales globales se inyectan dinámicamente mediante el archivo `js/config.js`.
 
 ---
 
@@ -219,11 +219,11 @@ Las credenciales de producción y los tokens se gestionan de manera segura bajo 
 
 ### ¿Por qué Zero-Build (Vanilla JS + HTML)?
 
-Evita dependencias complejas de Node.js, procesos de build pesados y reduce el tamaño de transferencia de la red[cite: 1, 3]. La aplicación es ligera, fácil de mantener y se despliega al instante[cite: 1, 3].
+Evita dependencias complejas de Node.js, procesos de build pesados y reduce el tamaño de transferencia de la red. La aplicación es ligera, fácil de mantener y se despliega al instante.
 
 ### ¿Por qué Supabase Realtime?
 
-En lugar de hacer *polling* constante (peticiones repetidas cada pocos segundos) para detectar si un producto se agotó, Supabase emite un evento vía WebSockets solo cuando ocurre una mutación en PostgreSQL, reduciendo el consumo de batería y datos del cliente[cite: 1, 2].
+En lugar de hacer *polling* constante (peticiones repetidas cada pocos segundos) para detectar si un producto se agotó, Supabase emite un evento vía WebSockets solo cuando ocurre una mutación en PostgreSQL, reduciendo el consumo de batería y datos del cliente.
 
 ---
 
@@ -292,10 +292,10 @@ Simplemente abre `index.html` mediante un servidor local en tu editor.
 
 Este proyecto permitió consolidar competencias en:
 
-* Desarrollo con arquitecturas serverless y BaaS (Supabase)[cite: 1, 2].
-* Sincronización de estado en tiempo real mediante WebSockets[cite: 1, 2].
-* Optimización de rendimiento en interfaces web sin frameworks (Zero-Build)[cite: 1, 3].
-* Estrategias de seguridad en base de datos mediante Row Level Security (RLS)[cite: 2, 3].
+* Desarrollo con arquitecturas serverless y BaaS (Supabase).
+* Sincronización de estado en tiempo real mediante WebSockets.
+* Optimización de rendimiento en interfaces web sin frameworks (Zero-Build).
+* Estrategias de seguridad en base de datos mediante Row Level Security (RLS).
 
 ---
 
@@ -303,45 +303,45 @@ Este proyecto permitió consolidar competencias en:
 
 **Systems Architecture**
 
-* Diseño de soluciones BaaS / Serverless de bajo costo[cite: 1, 2].
-* Sincronización en tiempo real cliente-servidor[cite: 1, 2].
+* Diseño de soluciones BaaS / Serverless de bajo costo.
+* Sincronización en tiempo real cliente-servidor.
 
 **Frontend & Mobile UX**
 
-* Interfaces móviles ultrarrápidas y accesibles[cite: 1, 3].
-* Componentes con Tailwind CSS y Vanilla JS[cite: 1, 3].
+* Interfaces móviles ultrarrápidas y accesibles.
+* Componentes con Tailwind CSS y Vanilla JS.
 
 **Product Management & TI**
 
-* Estrategia de producto B2B y empaquetamiento comercial ("Caballo de Troya")[cite: 1, 4, 6].
-* Despliegue ágil orientado a validación en terreno[cite: 1, 3, 4].
+* Estrategia de producto B2B y empaquetamiento comercial ("Caballo de Troya").
+* Despliegue ágil orientado a validación en terreno.
 
 ---
 
 ## 👩🏻‍💻 Autora
 
-**Victoria Vallejos**[cite: 5, 6]
+**Victoria Vallejos**
 
-Consultora TI, Workspaces Architect & Product Manager[cite: 5, 6]
+Consultora TI, Workspaces Architect & Product Manager
 
-Estudiante de Ingeniería Civil Informática — Universidad Andrés Bello[cite: 6]
+Estudiante de Ingeniería Civil Informática — Universidad Andrés Bello
 
 Áreas de especialización:
 
-* Digitalización de procesos[cite: 6].
-* Arquitectura de workspaces[cite: 6].
-* Tech Project Management & Product Management[cite: 6].
-* Optimización operativa para PyMEs[cite: 6].
+* Digitalización de procesos.
+* Arquitectura de workspaces.
+* Tech Project Management & Product Management.
+* Optimización operativa para PyMEs.
 
 ### Links
 
-* [Portfolio](https://victopvl.github.io/?utm_source=gemini)[cite: 5, 6]
-* [GitHub](https://github.com/Victopvl?utm_source=gemini)[cite: 1]
-* [Email](https://www.google.com/search?q=mailto%3Avictoriapaz.sa%40gmail.com)[cite: 5, 6]
+* [Portfolio](https://victopvl.github.io)
+* [GitHub](https://github.com/Victopvl)
+* [Email](https://www.google.com/search?q=mailto%3Avictoriapaz.sa%40gmail.com)
 
 ---
 
 ## 📄 Licencia
 
-Proyecto desarrollado con fines de demostración profesional y portfolio B2B[cite: 1, 3].
+Proyecto desarrollado con fines de demostración profesional y portfolio B2B.
 ](https://carta-digital-interactiva.vercel.app/)
